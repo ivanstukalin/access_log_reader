@@ -36,13 +36,13 @@ class FileDataHandler
      */
     private $parsedData = [
         [
-            'ip'        => null,
-            'date'      => null,
-            'method'    => null,
-            'url'       => null,
-            'status'    => null,
-            'traffic'   => null,
-            'source'    => null,
+            'ip'              => null,
+            'date'            => null,
+            'method'          => null,
+            'url'             => null,
+            'status'          => null,
+            'traffic'         => null,
+            'source'          => null,
             'userAgentInfo'   => null,
         ]
     ];
@@ -51,14 +51,14 @@ class FileDataHandler
      * @var array
      */
     private $patterns = [
-        'ip' => '^(\S+)',
-        'firstDash' => '(\S+)',
-        'secondDash' => '(\S+)',
-        'date' => '\[([^\]]+)\]',
-        'method' => '\"(\S+) (.*?) (\S+)\"',
-        'status' => '(\S+)',
-        'traffic' => '(\S+)',
-        'source' => '(\".*?\")',
+        'ip'            => '^(\S+)',
+        'firstDash'     => '(\S+)',
+        'secondDash'    => '(\S+)',
+        'date'          => '\[([^\]]+)\]',
+        'method'        => '\"(\S+) (.*?) (\S+)\"',
+        'status'        => '(\S+)',
+        'traffic'       => '(\S+)',
+        'source'        => '(\".*?\")',
         'userAgentInfo' => '(\".*?\")',
     ];
     
@@ -139,8 +139,6 @@ class FileDataHandler
      * Второй вариант
      * Менее ресурсозатратный способ чтения файла и выборки статистических 
      * показателей. 
-     * 
-     * 
      *
      * @return void
      */
@@ -188,7 +186,7 @@ class FileDataHandler
     }
 
     /**
-     * Подготавливает статистические показателий поисковых роботов
+     * Подготавливает статистические показатели поисковых роботов
      *
      * @param array $crawlers
      * @return array
@@ -284,13 +282,13 @@ class FileDataHandler
         preg_match($rowPattern, $row, $parsedRow);
 
         return [
-            'ip'        => $parsedRow[1],
-            'date'      => $parsedRow[4],
-            'method'    => $parsedRow[5],
-            'url'       => $parsedRow[6],
-            'status'    => $parsedRow[8],
-            'traffic'   => $parsedRow[9],
-            'source'    => $parsedRow[10],
+            'ip'              => $parsedRow[1],
+            'date'            => $parsedRow[4],
+            'method'          => $parsedRow[5],
+            'url'             => $parsedRow[6],
+            'status'          => $parsedRow[8],
+            'traffic'         => $parsedRow[9],
+            'source'          => $parsedRow[10],
             'userAgentInfo'   => $parsedRow[11],
         ];
     }
