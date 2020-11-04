@@ -121,14 +121,6 @@ class FileDataHandler
             }
         }
 
-        $crawlersStat = array_count_values($crawlers);
-
-        foreach (self::CRAWLERS as $key) {
-            if(!array_key_exists($key, $crawlersStat)) {
-                $crawlersStat[$key] = 0;
-            }
-        }
-
         $this->statFromFileStorage->set('crawlers',  $this->prepareCrawlersStat($crawlers));
         $this->statFromFileStorage->set('statusCodes', array_count_values($statusCodes));
         $this->statFromFileStorage->set('uniqueUrlsCount', count(array_count_values($urls)));
