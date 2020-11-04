@@ -79,7 +79,7 @@ class FileDataHandler
     {
         $this->dataExtract();
 
-        $this->parse();
+        $this->parseAllRows();
         
         return $this->parsedData;
     }
@@ -129,10 +129,82 @@ class FileDataHandler
             }
         }
 
-        $this->statFromFileStorage->set('crawlers', $crawlersStat);
+        $this->statFromFileStorage->set('crawlers',  $this->prepareCrawlersStat($crawlers));
         $this->statFromFileStorage->set('statusCodes', array_count_values($statusCodes));
         $this->statFromFileStorage->set('uniqueUrlsCount', count(array_count_values($urls)));
         $this->statFromFileStorage->set('totalTraffic', $traffic);
+    }
+
+    /**
+     * Второй вариант
+     * Менее ресурсозатратный способ чтения файла и выборки статистических 
+     * показателей. 
+     * 
+     * 
+     *
+     * @return void
+     */
+    public function selectStatInfoEconomy()
+    {
+        $crawlers = [];
+        $urls = [];
+        $traffic = 0;
+        $statusCodes = [];
+
+
+        foreach ($this->readFile() as $row) {
+            if(!$row) {
+                continue;
+            }
+            $parsedRow = $this->rowParse($row);
+            foreach ($parsedRow as $key => $value) {
+                switch ($key) {
+                    case 'url':
+                        $urls[] = $value;
+                        break;
+                    
+                    case 'status':
+                        $statusCodes[] = $value;
+                        break;
+                    
+                    case 'traffic':
+                        $traffic += $value;
+                        break;
+
+                    case 'userAgentInfo':
+                        $crawlers[] = $this->getInfoAboutCrawlers($value);
+                        break;
+                    
+                    default:
+                        break;
+                }
+            }
+        }
+
+        $this->statFromFileStorage->set('crawlers', $this->prepareCrawlersStat($crawlers));
+        $this->statFromFileStorage->set('statusCodes', array_count_values($statusCodes));
+        $this->statFromFileStorage->set('uniqueUrlsCount', count(array_count_values($urls)));
+        $this->statFromFileStorage->set('totalTraffic', $traffic);
+    }
+
+    /**
+     * Подготавливает статистические показателий поисковых роботов
+     *
+     * @param array $crawlers
+     * @return array
+     */
+    private function prepareCrawlersStat(array $crawlers): array
+    {
+        
+        $crawlersStat = array_count_values($crawlers);
+
+        foreach (self::CRAWLERS as $key) {
+            if(!array_key_exists($key, $crawlersStat)) {
+                $crawlersStat[$key] = 0;
+            }
+        }
+
+        return $crawlersStat;
     }
 
     /**
@@ -168,24 +240,12 @@ class FileDataHandler
      *
      * @return void
      */
-    private function parse(): void
+    private function parseAllRows(): void
     {
-        $rowPattern = $this->prepareRowPattern();
         $rowCounter = 0;
 
         foreach ($this->fileRows as $row) {
-            preg_match($rowPattern, $row, $parsedRow);
-            $this->parsedData[$rowCounter] = [
-                'ip'        => $parsedRow[1],
-                'date'      => $parsedRow[4],
-                'method'    => $parsedRow[5],
-                'url'       => $parsedRow[6],
-                'status'    => $parsedRow[8],
-                'traffic'   => $parsedRow[9],
-                'source'    => $parsedRow[10],
-                'userAgentInfo'   => $parsedRow[11],
-            ];
-
+            $this->parsedData[$rowCounter] = $this->rowParse($row);
             $rowCounter++;
         }
     }
@@ -210,6 +270,29 @@ class FileDataHandler
         $rowPattern .= "/";
 
         return $rowPattern;
+    }
+
+    /**
+     * Парсит строку, выбирая из нее нужные элементы
+     *
+     * @param string $row
+     * @return array
+     */
+    private function rowParse(string $row): array
+    {
+        $rowPattern = $this->prepareRowPattern();
+        preg_match($rowPattern, $row, $parsedRow);
+
+        return [
+            'ip'        => $parsedRow[1],
+            'date'      => $parsedRow[4],
+            'method'    => $parsedRow[5],
+            'url'       => $parsedRow[6],
+            'status'    => $parsedRow[8],
+            'traffic'   => $parsedRow[9],
+            'source'    => $parsedRow[10],
+            'userAgentInfo'   => $parsedRow[11],
+        ];
     }
 
     /**

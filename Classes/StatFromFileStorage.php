@@ -57,4 +57,19 @@ class StatFromFileStorage
     {
         $this->$param = $amount;
     }
+
+    /**
+     * Возвращает JSON с набором данных
+     *
+     * @return string
+     */
+    public function getJson(): string
+    {
+        return json_encode([
+            'views' => $this->totalTraffic,
+            'urls'  => $this->uniqueUrlsCount,
+            'crawlers' => $this->crawlers,
+            'statusCodes' => $this->statusCodes,
+        ]);
+    }
 }
