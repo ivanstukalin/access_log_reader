@@ -23,10 +23,11 @@ class StatFromFileStorage
      * @var array
      */
     private $crawlers = [
-        'Google' => 0,
-        'Bing'   => 0,
-        'Baidu'  => 0,
-        'Yandex' => 0,
+        'Google'    => 0,
+        'Bing'      => 0,
+        'Baidu'     => 0,
+        'Yandex'    => 0,
+        'unknown'   => 0,
     ];
 
     /**
@@ -38,9 +39,9 @@ class StatFromFileStorage
      * Геттер
      *
      * @param string $param
-     * @return integer
+     * @return integer|array
      */
-    public function get($param)
+    public function get(string $param)
     {
         return $this->$param;
     }
@@ -48,11 +49,11 @@ class StatFromFileStorage
     /**
      * Сеттер
      *
-     * @param string $param
-     * @param integer $amount
+     * @param string|array $param
+     * @param integer|array $amount
      * @return void
      */
-    public function set($param, $amount)
+    public function set($param, $amount): void
     {
         $this->$param = $amount;
     }
