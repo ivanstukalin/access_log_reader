@@ -168,13 +168,20 @@ class FileDataHandler
                         break;
                     
                     case 'traffic':
+                        
                         if ($parsedRow['status'] != '301') {
                             $traffic += $value;
                         }
+
                         break;
 
                     case 'userAgentInfo':
-                        $crawlers[] = $this->getInfoAboutCrawlers($value);
+                        $crawler = $this->getInfoAboutCrawlers($value);
+
+                        if ($crawler) {
+                            $crawlers[] = $crawler;
+                        }
+
                         break;
                     
                     default:
@@ -321,6 +328,6 @@ class FileDataHandler
             }
         }
 
-        return $findedRobot ? $findedRobot : 'unknown';
+        return $findedRobot ? $findedRobot : false;
     }
 }
