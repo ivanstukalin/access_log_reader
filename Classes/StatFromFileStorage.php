@@ -66,7 +66,8 @@ class StatFromFileStorage
     public function getJson(): string
     {
         return json_encode([
-            'views' => $this->totalTraffic,
+            'views' => $this->viewsCount,
+            'traffic' => $this->totalTraffic,
             'urls'  => $this->uniqueUrlsCount,
             'crawlers' => $this->crawlers,
             'statusCodes' => $this->statusCodes,

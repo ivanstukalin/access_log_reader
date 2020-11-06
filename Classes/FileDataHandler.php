@@ -94,9 +94,13 @@ class FileDataHandler
         $crawlers = [];
         $urls = [];
         $traffic = 0;
+        $views = 0;
         $statusCodes = [];
 
         foreach ($this->parsedData as $parsedRow) {
+            if(!$row) {
+                continue;
+            }
             foreach ($parsedRow as $key => $value) {
                 switch ($key) {
                     case 'url':
@@ -108,7 +112,9 @@ class FileDataHandler
                         break;
                     
                     case 'traffic':
-                        $traffic += $value;
+                        if ($parsedRow['status'] != '301') {
+                            $traffic += $value;
+                        }
                         break;
 
                     case 'userAgentInfo':
@@ -119,8 +125,11 @@ class FileDataHandler
                         break;
                 }
             }
+
+            $views++;
         }
 
+        $this->statFromFileStorage->set('viewsCount', $views);
         $this->statFromFileStorage->set('crawlers',  $this->prepareCrawlersStat($crawlers));
         $this->statFromFileStorage->set('statusCodes', array_count_values($statusCodes));
         $this->statFromFileStorage->set('uniqueUrlsCount', count(array_count_values($urls)));
@@ -139,6 +148,7 @@ class FileDataHandler
         $crawlers = [];
         $urls = [];
         $traffic = 0;
+        $views = 0;
         $statusCodes = [];
 
 
@@ -158,7 +168,9 @@ class FileDataHandler
                         break;
                     
                     case 'traffic':
-                        $traffic += $value;
+                        if ($parsedRow['status'] != '301') {
+                            $traffic += $value;
+                        }
                         break;
 
                     case 'userAgentInfo':
@@ -169,8 +181,11 @@ class FileDataHandler
                         break;
                 }
             }
+
+            $views++;
         }
 
+        $this->statFromFileStorage->set('viewsCount', $views);
         $this->statFromFileStorage->set('crawlers', $this->prepareCrawlersStat($crawlers));
         $this->statFromFileStorage->set('statusCodes', array_count_values($statusCodes));
         $this->statFromFileStorage->set('uniqueUrlsCount', count(array_count_values($urls)));
