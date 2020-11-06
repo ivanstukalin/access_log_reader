@@ -98,7 +98,7 @@ class FileDataHandler
         $statusCodes = [];
 
         foreach ($this->parsedData as $parsedRow) {
-            if(!$parsedRow) {
+            if(empty($parsedRow)) {
                 continue;
             }
             foreach ($parsedRow as $key => $value) {
@@ -112,7 +112,7 @@ class FileDataHandler
                         break;
                     
                     case 'traffic':
-                        if ($parsedRow['status'] != '301') {
+                        if ($parsedRow['status'] !== '301') {
                             $traffic += $value;
                         }
                         break;
@@ -120,7 +120,7 @@ class FileDataHandler
                     case 'userAgentInfo':
                         $crawler = $this->getInfoAboutCrawlers($value);
 
-                        if ($crawler) {
+                        if (isset($crawler)) {
                             $crawlers[] = $crawler;
                         }
 
@@ -158,7 +158,7 @@ class FileDataHandler
 
 
         foreach ($this->readFile() as $row) {
-            if(!$row) {
+            if(empty($row)) {
                 continue;
             }
             $parsedRow = $this->rowParse($row);
@@ -174,7 +174,7 @@ class FileDataHandler
                     
                     case 'traffic':
 
-                        if ($parsedRow['status'] != '301') {
+                        if ($parsedRow['status'] !== '301') {
                             $traffic += $value;
                         }
 
@@ -183,7 +183,7 @@ class FileDataHandler
                     case 'userAgentInfo':
                         $crawler = $this->getInfoAboutCrawlers($value);
 
-                        if ($crawler) {
+                        if (isset($crawler)) {
                             $crawlers[] = $crawler;
                         }
 
@@ -316,23 +316,23 @@ class FileDataHandler
      * Парсит HTTP_USER_AGENT, достает информацию о поисковом роботе
      *
      * @param string $userAgentInfo
-     * @return string
+     * @return string|null
      */
-    private function getInfoAboutCrawlers(string $userAgentInfo): string
+    private function getInfoAboutCrawlers(string $userAgentInfo)
     {
         $findedRobot = null;
         
         preg_match(self::HTTP_USER_AGENT_PATTERN, $userAgentInfo, $parsedData);
 
-        if($parsedData) {
+        if(!empty($parsedData)) {
             foreach (self::CRAWLERS as $robot) {
                 $findedRobot = stristr($parsedData[2], $robot) ? $robot : null;
-                if($findedRobot) {
+                if(isset($findedRobot)) {
                     break;
                 }
             }
         }
 
-        return $findedRobot ? $findedRobot : false;
+        return $findedRobot;
     }
 }
