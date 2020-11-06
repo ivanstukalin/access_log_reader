@@ -118,7 +118,12 @@ class FileDataHandler
                         break;
 
                     case 'userAgentInfo':
-                        $crawlers[] = $this->getInfoAboutCrawlers($value);
+                        $crawler = $this->getInfoAboutCrawlers($value);
+                        
+                        if ($crawler) {
+                            $crawlers[] = $crawler;
+                        }
+
                         break;
                     
                     default:
@@ -168,7 +173,7 @@ class FileDataHandler
                         break;
                     
                     case 'traffic':
-                        
+
                         if ($parsedRow['status'] != '301') {
                             $traffic += $value;
                         }
