@@ -98,7 +98,7 @@ class FileDataHandler
         $statusCodes = [];
 
         foreach ($this->parsedData as $parsedRow) {
-            if(!$row) {
+            if(!$parsedRow) {
                 continue;
             }
             foreach ($parsedRow as $key => $value) {
@@ -119,7 +119,7 @@ class FileDataHandler
 
                     case 'userAgentInfo':
                         $crawler = $this->getInfoAboutCrawlers($value);
-                        
+
                         if ($crawler) {
                             $crawlers[] = $crawler;
                         }
